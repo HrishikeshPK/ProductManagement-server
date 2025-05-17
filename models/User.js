@@ -15,10 +15,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isAdmin: {                     // FOR ADMIN
+  isAdmin: {
+    // FOR ADMIN
     type: Boolean,
     default: false,
-  }, 
+  },
+  wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 });
 
 module.exports = mongoose.model("User", userSchema);
