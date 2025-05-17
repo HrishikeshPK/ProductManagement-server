@@ -44,23 +44,35 @@ exports.getProducts = async (req, res) => {
 };
 
 exports.getAllProducts = async (req, res) => {
-  console.log("Inside getallproducts api")
+  console.log("Inside getallproducts api");
   try {
     const searchQuery = req.query.search || "";
     const subCategory = req.query.subCategory || "";
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
-    let filter = {
-      name: { $regex: searchQuery, $options: "i" }
+    const filter = {
+      name: { $regex: searchQuery, $options: "i" },
     };
 
     if (subCategory) {
       filter.subCategory = subCategory;
     }
 
-    const products = await Product.find(filter);
-    res.status(200).json(products);
+    const skip = (page - 1) * limit;
+
+    const total = await Product.countDocuments(filter);
+    const products = await Product.find(filter).skip(skip).limit(limit);
+    res.status(200).json({
+      total,
+      page,
+      pages: Math.ceil(total / limit),
+      products,
+    });
   } catch (err) {
-    res.status(500).json({ msg: "Error fetching products", error: err.message });
+    res
+      .status(500)
+      .json({ msg: "Error fetching products", error: err.message });
   }
 };
 
