@@ -1,6 +1,7 @@
 const Category = require('../models/Category');
 
 exports.createCategory = async (req, res) => {
+  console.log("Inside create Categoires")
   const { name } = req.body;
   try {
     const exists = await Category.findOne({ name });
@@ -15,6 +16,7 @@ exports.createCategory = async (req, res) => {
 };
 
 exports.getCategories = async (req, res) => {
+  console.log("Inside get Categoires")
   try {
     const categories = await Category.find();
     res.json(categories);
